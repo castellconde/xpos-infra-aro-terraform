@@ -1,0 +1,22 @@
+name: CI IaC - Terraform & OpenShift Operators Validation
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  validate-terraform:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.8.5
+      - name: Verificar formato Terraform
+        run: terraform fmt -check
+      - name: Inicializar Terraform (sin backend remoto en validación)
+        run: terraform init -backend=false
+      - name: Validar sintaxis y esquema IaC
+        run: terraform validate
